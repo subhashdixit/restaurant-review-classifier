@@ -1,0 +1,10 @@
+
+!site/
+!site/**
+!reports/
+!reports/**
+!data/yelp_labelled.txt
+!project.json
+node_modules/
+.pylint-cache/
+.venv/

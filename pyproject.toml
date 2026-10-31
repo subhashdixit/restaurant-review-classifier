@@ -1,0 +1,8 @@
+[tool.black]
+line-length = 88
+[tool.pylint.main]
+source-roots = ["scripts"]
+[tool.pylint.messages_control]
+disable = ["too-many-locals", "too-many-statements", "too-many-arguments", "too-many-positional-arguments", "import-outside-toplevel", "duplicate-code"]
+[tool.pylint.format]
+max-line-length = 88
