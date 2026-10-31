@@ -1,0 +1,12 @@
+{
+  "old": "Restaurant_Reviews_Web_App",
+  "name": "restaurant-review-classifier",
+  "title": "Restaurant Review Lab",
+  "kind": "classification",
+  "unit": "source sentiment label",
+  "intro": "Classify English restaurant-review sentiment and explore TF-IDF, model scores and language limits.",
+  "limitations": "This model learns binary Yelp sentence labels from the UCI dataset. There is no neutral class. Mixed reviews, sarcasm and other languages may be misclassified.",
+  "positiveLabel": "Positive source sentiment label",
+  "negativeLabel": "Negative source sentiment label",
+  "color": "#8b4e78"
+}

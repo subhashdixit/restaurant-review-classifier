@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; worker-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'"
+    />
+    <meta
+      name="description"
+      content="Classify English restaurant-review sentiment and explore TF-IDF, model scores and language limits."
+    />
+    <title>Restaurant Review Lab</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <header>
+      <span class="eyebrow">BROWSER MACHINE LEARNING · SUBHASH DIXIT</span>
+      <h1>Restaurant Review Lab</h1>
+      <p>
+        Explore historical bank-customer churn from financial and engagement
+        features.
+      </p>
+      <nav>
+        <a href="#explore">Explore a profile</a><a href="#batch">Score a CSV</a
+        ><a href="#evidence">Read the evidence</a
+        ><a
+          href="https://github.com/subhashdixit/restaurant-review-classifier#readme"
+          >Project guide</a
+        >
+      </nav>
+    </header>
+    <main>
+      <aside class="notice">
+        <strong>Historical learning application.</strong> The target is the
+        source Exited flag. Names, customer IDs and gender are excluded.
+        Historical churn associations do not establish why a customer left or
+        justify lending decisions. Feature values stay in your browser; this app
+        has no inference API or upload endpoint.
+      </aside>
+      <p id="status" role="status" aria-live="polite">
+        Loading and verifying the numeric model…
+      </p>
+      <section id="explore">
+        <span class="eyebrow">01 / EXPLORE</span>
+        <h2>Try a review</h2>
+        <p>
+          Defaults combine training medians and common categories. They do not
+          identify a source person, vehicle or tested mixture. Blank numeric
+          fields use training-only imputation.
+        </p>
+        <form id="single-form">
+          <details id="fields-details" open>
+            <summary id="field-count">Review text</summary>
+            <div id="inputs"></div>
+          </details>
+          <div id="threshold-row" hidden>
+            <label for="threshold"
+              >Positive-label threshold<input
+                id="threshold"
+                type="number"
+                min="0.01"
+                max="0.99"
+                step="0.01"
+            /></label>
+          </div>
+          <div id="scenario" hidden>
+            <h3>Second profile: compare a what-if</h3>
+            <p>
+              Change a few fields to compare associations. This is not an
+              intervention or a counterfactual causal model.
+            </p>
+            <div id="scenario-inputs"></div>
+          </div>
+          <button id="run" type="submit" disabled>
+            Calculate model result →</button
+          ><button id="reset" type="button" class="secondary">
+            Restore synthetic defaults
+          </button>
+        </form>
+        <div id="prediction" aria-live="polite"></div>
+        <div id="scenario-result" aria-live="polite"></div>
+        <button id="export-result" hidden>Download prediction</button>
+      </section>
+      <section id="batch">
+        <span class="eyebrow">02 / BATCH</span>
+        <h2>Work with a source-format CSV</h2>
+        <p>
+          Use all named feature columns, up to 500 rows and 2 MiB. Blank fields
+          represent missing observations. Predictions are calculated in a local
+          Web Worker; exported rows contain predictions rather than copying your
+          input features.
+        </p>
+        <button id="sample" class="secondary">Download sample CSV</button
+        ><label for="csv"
+          >Select a UTF-8 CSV<input
+            id="csv"
+            type="file"
+            accept=".csv,text/csv" /></label
+        ><button id="batch-run" disabled>Score locally and download</button>
+      </section>
+      <section id="evidence">
+        <span class="eyebrow">03 / EVIDENCE</span>
+        <h2>Model selection and held-out evaluation</h2>
+        <p id="selected-model"></p>
+        <div id="metrics" class="metrics"></div>
+        <div id="candidate-chart" class="chart"></div>
+        <div id="test-table" class="table-wrap"></div>
+        <p>
+          Preprocessing is fitted on training data only. Validation selects the
+          algorithm and classification threshold. The published test set is held
+          out. These are retrospective source-data results, not guarantees for a
+          new population.
+        </p>
+        <div class="flow">
+          <span>Validate fields</span><b>→</b><span>Training-only TF-IDF</span
+          ><b>→</b><span>Verified numeric model</span><b>→</b
+          ><span>Explain and export</span>
+        </div>
+        <a href="./metrics.json">Full evaluation and source metadata</a>
+      </section>
+    </main>
+    <footer>
+      Restaurant Review Lab · HTML + JavaScript · GitHub Pages ·
+      <a href="https://github.com/subhashdixit/restaurant-review-classifier"
+        >Source and reproducibility</a
+      >
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,196 @@
+{
+  "version": "1.0.0",
+  "source_path": "data/yelp_labelled.txt",
+  "source_sha256": "c76468b7b5c6e56a0804d728345c5f84aa2142ddb214420f61cc9cfd4c00d2ea",
+  "source_notice": "Kotzias, D. (2015). Sentiment Labelled Sentences, Yelp subset. UCI Machine Learning Repository 331. DOI 10.24432/C57604. CC BY 4.0. This replaces the absent original training TSV; legacy pickle models are preserved but not executed.",
+  "original_rows": 1000,
+  "valid_target_rows": 1000,
+  "selected_model": "multinomial_naive_bayes",
+  "threshold": 0.43,
+  "split": {
+    "train": 600,
+    "validation": 200,
+    "test": 200
+  },
+  "split_method": "Grouped normalized review text; seeds 42 and 43; not author/time-separated",
+  "validation_candidates": {
+    "logistic_regression": {
+      "rows": 200,
+      "accuracy": 0.775,
+      "macro_f1": 0.7745434504872366,
+      "average_precision": 0.8846182463061408,
+      "roc_auc": 0.869,
+      "confusion_matrix": [
+        [
+          82,
+          18
+        ],
+        [
+          27,
+          73
+        ]
+      ],
+      "classification_report": {
+        "0": {
+          "precision": 0.7522935779816514,
+          "recall": 0.82,
+          "f1-score": 0.784688995215311,
+          "support": 100.0
+        },
+        "1": {
+          "precision": 0.8021978021978022,
+          "recall": 0.73,
+          "f1-score": 0.7643979057591623,
+          "support": 100.0
+        },
+        "accuracy": 0.775,
+        "macro avg": {
+          "precision": 0.7772456900897269,
+          "recall": 0.7749999999999999,
+          "f1-score": 0.7745434504872366,
+          "support": 200.0
+        },
+        "weighted avg": {
+          "precision": 0.7772456900897268,
+          "recall": 0.775,
+          "f1-score": 0.7745434504872367,
+          "support": 200.0
+        }
+      }
+    },
+    "multinomial_naive_bayes": {
+      "rows": 200,
+      "accuracy": 0.78,
+      "macro_f1": 0.7796474358974359,
+      "average_precision": 0.8882478658591353,
+      "roc_auc": 0.8663,
+      "confusion_matrix": [
+        [
+          82,
+          18
+        ],
+        [
+          26,
+          74
+        ]
+      ],
+      "classification_report": {
+        "0": {
+          "precision": 0.7592592592592593,
+          "recall": 0.82,
+          "f1-score": 0.7884615384615384,
+          "support": 100.0
+        },
+        "1": {
+          "precision": 0.8043478260869565,
+          "recall": 0.74,
+          "f1-score": 0.7708333333333334,
+          "support": 100.0
+        },
+        "accuracy": 0.78,
+        "macro avg": {
+          "precision": 0.7818035426731079,
+          "recall": 0.78,
+          "f1-score": 0.7796474358974359,
+          "support": 200.0
+        },
+        "weighted avg": {
+          "precision": 0.7818035426731079,
+          "recall": 0.78,
+          "f1-score": 0.7796474358974359,
+          "support": 200.0
+        }
+      }
+    }
+  },
+  "test": {
+    "rows": 200,
+    "accuracy": 0.685,
+    "macro_f1": 0.6827075621364358,
+    "average_precision": 0.8270944332514978,
+    "roc_auc": 0.8126250500200081,
+    "confusion_matrix": [
+      [
+        60,
+        42
+      ],
+      [
+        21,
+        77
+      ]
+    ],
+    "classification_report": {
+      "0": {
+        "precision": 0.7407407407407407,
+        "recall": 0.5882352941176471,
+        "f1-score": 0.6557377049180327,
+        "support": 102.0
+      },
+      "1": {
+        "precision": 0.6470588235294118,
+        "recall": 0.7857142857142857,
+        "f1-score": 0.7096774193548387,
+        "support": 98.0
+      },
+      "accuracy": 0.685,
+      "macro avg": {
+        "precision": 0.6938997821350763,
+        "recall": 0.6869747899159664,
+        "f1-score": 0.6827075621364358,
+        "support": 200.0
+      },
+      "weighted avg": {
+        "precision": 0.6948366013071896,
+        "recall": 0.685,
+        "f1-score": 0.6821681649920677,
+        "support": 200.0
+      }
+    }
+  },
+  "test_baseline": {
+    "rows": 200,
+    "accuracy": 0.49,
+    "macro_f1": 0.3288590604026846,
+    "average_precision": 0.49,
+    "roc_auc": 0.5,
+    "confusion_matrix": [
+      [
+        0,
+        102
+      ],
+      [
+        0,
+        98
+      ]
+    ],
+    "classification_report": {
+      "0": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 102.0
+      },
+      "1": {
+        "precision": 0.49,
+        "recall": 1.0,
+        "f1-score": 0.6577181208053692,
+        "support": 98.0
+      },
+      "accuracy": 0.49,
+      "macro avg": {
+        "precision": 0.245,
+        "recall": 0.5,
+        "f1-score": 0.3288590604026846,
+        "support": 200.0
+      },
+      "weighted avg": {
+        "precision": 0.24009999999999998,
+        "recall": 0.49,
+        "f1-score": 0.3222818791946309,
+        "support": 200.0
+      }
+    }
+  },
+  "artifact_sha256": "fea79a66d4184401648e823987e1d2443c37a4066dd3773d741353f9dac36abd",
+  "training_only_preprocessing": true
+}
