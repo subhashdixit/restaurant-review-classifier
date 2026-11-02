@@ -481,7 +481,11 @@
         "sources": [
           {
             "path": "requirements-training.txt",
-            "sha256": "1401874148b80f98d3d096057449ffbadba618a56abbf6444aa15e0d1abea8b7"
+            "sha256": "c9161b2a90f23df7d23fcef33dd4d01868b7ebdeb4b96f037dab9fb005898725"
+          },
+          {
+            "path": "requirements.txt",
+            "sha256": "89f62a55e9d8f29e9c399a2719252ef7f6bba1883a0874d00a17d7b60f9c86c3"
           }
         ],
         "resolved": [
