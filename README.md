@@ -1,5 +1,8 @@
 # Restaurant Review Lab
 
+**Reproducible versions:** [Dependency versions and exact setup](DEPENDENCIES.md).
+
+
 **Application:** [Open Restaurant Review Lab](https://subhashdixit.github.io/restaurant-review-classifier/)
 
 A complete HTML/JavaScript app for **binary restaurant-review sentiment classification**, with real training, reproducible evaluation and browser-local inference. Enter a review or score a CSV; inspect the positive-label score and threshold, then export the result.
@@ -88,7 +91,7 @@ Open `http://127.0.0.1:8000`. Serve over HTTP rather than opening `index.html` w
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install -r requirements-training.txt
+python -m python -m pip install --require-hashes --only-binary=:all: -r requirements-training.lock.txt
 python scripts/train.py
 python scripts/check_release.py
 python -m black --check scripts
