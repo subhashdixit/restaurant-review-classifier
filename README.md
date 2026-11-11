@@ -1,19 +1,22 @@
-# Restaurant Review Lab
+# Restaurant Review Classifier
 
-**Reproducible versions:** [Dependency versions and exact setup](DEPENDENCIES.md).
+## 1. Project overview
 
+Restaurant Review Lab scores single reviews or CSV batches for binary sentiment. A model trained in Python runs locally in the browser.
 
-**Application:** [Open Restaurant Review Lab](https://subhashdixit.github.io/restaurant-review-classifier/)
+[Live demo](https://subhashdixit.github.io/restaurant-review-classifier/) · [Source repository](https://github.com/subhashdixit/restaurant-review-classifier)
 
-A complete HTML/JavaScript app for **binary restaurant-review sentiment classification**, with real training, reproducible evaluation and browser-local inference. Enter a review or score a CSV; inspect the positive-label score and threshold, then export the result.
+![Restaurant Review Classifier main screen](docs/images/application.png)
 
-## Problem and source
+## 2. Motivation and problem statement
 
-The original repository contains Flask code and legacy pickle objects but not its training TSV. The maintained app uses the official **Yelp subset of UCI Sentiment Labelled Sentences**: 1,000 sentences, originally 500 positive and 500 negative. This is a disclosed source/model replacement, not an invented evaluation of the missing dataset.
+Review teams need a way to triage large volumes of feedback and understand which reviews a model may misread. This app exposes sentiment scores, adjustable thresholds, and vocabulary coverage so reviewers can distinguish a clear model signal from sparse or ambiguous text.
 
-Attribution: Kotzias, D. (2015). [Sentiment Labelled Sentences](https://doi.org/10.24432/C57604), UCI Machine Learning Repository, **CC BY 4.0**. The curated source intentionally selected clear positive/negative examples. It has no neutral label and does not represent all real review language. Original artifacts remain available for historical comparison.
+## 3. Solution and scope
 
-## Use it
+Enter a single record or score a CSV. Inspect the positive-label score, adjust the decision threshold, and export results. The shipped test report uses the validation-selected threshold.
+
+## 4. Quick start and usage
 
 1. Read the synthetic starting review and classify it.
 2. Change the wording and inspect the score. The app learns lexical associations; it does not reliably understand sarcasm or mixed intent.
@@ -23,22 +26,56 @@ Attribution: Kotzias, D. (2015). [Sentiment Labelled Sentences](https://doi.org/
 
 Reviews require **3–4,000 characters**, with a maximum of 1,000 recognized word tokens. Empty/nontext inputs fail clearly. If an input has no training-vocabulary overlap, the app shows an explicit **unreliable result** warning. A score is not a calibrated probability that a customer was satisfied, and this is not a current restaurant rating service.
 
-## How it works
+## 5. High-level architecture
 
 ```mermaid
 flowchart LR
- A[Attributed labelled Yelp sentences] --> B[Group normalized duplicates]
- B --> C[Train / validation / test]
- C --> D[Fit training-only word and bigram vocabulary]
- D --> E[Sublinear TF-IDF and L2 normalization]
- E --> F[Naive Bayes / Logistic Regression]
- F --> G[Validation ranking and threshold]
- G --> H[Held-out evaluation]
- H --> I[Export vocabulary, IDF and weights]
- I --> J[Verified JavaScript inference on GitHub Pages]
+    A["Labeled Yelp sentences"] --> B["Offline text model training"] --> C["Versioned vocabulary and weights"] --> D["Browser text scoring"]
 ```
 
-**Tokenization:** lowercase text, extract ASCII letter sequences of at least two characters, then add adjacent word pairs. For example, `Not good!` becomes `not`, `good`, `not good`. This explicit rule is identical in Python and JavaScript. It does not stem words or support every language. Bigram features can represent a phrase but do not guarantee correct treatment of negation.
+## 6. End-to-end request workflow
+
+```mermaid
+sequenceDiagram
+    actor Visitor
+    participant UI as Application
+    participant Logic as Processing layer
+    Visitor->>UI: Enter review text or upload CSV
+    UI->>Logic: Tokenize, vectorize, and score review text
+    alt Valid input
+        Logic-->>UI: Positive-label scores and decisions
+        UI-->>Visitor: Render or export the result
+    else Invalid input
+        Logic-->>UI: Input error
+        UI-->>Visitor: Show actionable feedback
+    end
+```
+
+## 7. Data sources, inputs, and outputs
+
+The original repository contains Flask code and legacy pickle objects but not its training TSV. The maintained app uses the official **Yelp subset of UCI Sentiment Labelled Sentences**: 1,000 sentences, originally 500 positive and 500 negative. This is a disclosed source/model replacement, not an invented evaluation of the missing dataset.
+
+Attribution: Kotzias, D. (2015). [Sentiment Labelled Sentences](https://doi.org/10.24432/C57604), UCI Machine Learning Repository, **CC BY 4.0**. The curated source intentionally selected clear positive/negative examples. It has no neutral label and does not represent all real review language. Original artifacts remain available for historical comparison.
+
+## 8. Data flow and ETL pipeline
+
+```mermaid
+flowchart LR
+    A["UCI Yelp text and labels"] --> B["Group identical normalized reviews"] --> C["Create train, validation and test splits"] --> D["Fit vectorizer and classifier"] --> E["Export artifacts and parity fixtures"]
+```
+
+## 9. Low-level design and interfaces
+
+```mermaid
+flowchart LR
+    A["app.js: review and batch UI"] --> B["model-worker.js: local jobs"] --> C["text-engine.js: tokenize and vectorize"] --> D["model-engine.js: classify and apply threshold"]
+```
+
+The static app validates inputs and scores them locally. It exposes a form and CSV interface.
+
+## 10. Concepts and algorithms
+
+**Tokenization:** lowercase text, extract ASCII letter sequences of at least two characters, then add adjacent word pairs. This explicit rule is identical in Python and JavaScript. It does not stem words or support every language. Bigram features can represent a phrase but do not guarantee correct treatment of negation.
 
 **TF-IDF:** count a feature, use sublinear term frequency `1 + log(count)`, multiply by its training-fitted inverse document frequency, then divide the vector by its L2 norm. The vocabulary has **1154 features**, capped at 4,000 with minimum training document frequency 2. Vocabulary and IDF never fit validation/test text.
 
@@ -46,7 +83,18 @@ flowchart LR
 
 Selected model: **multinomial_naive_bayes**. For binary Naive Bayes, the portable model exports `log P(feature|1) − log P(feature|0)` and the log prior ratio. Their dot product with the TF-IDF vector gives a margin; the sigmoid converts it to the same normalized binary score as sklearn. This is an exact numeric export of the selected model, not a keyword-only mock-up.
 
-## Evaluation
+## 11. Technology choices and dependencies
+
+| Technology | Role and rationale |
+| --- | --- |
+| Python and scikit-learn | Fit vocabulary, feature weights, and classifier with reproducible splits. |
+| JavaScript ES modules | Apply the same text features and scoring to local input. |
+| Web Worker | Handle batch scoring without blocking the page. |
+| Node and GitHub Actions | Check feature/scoring parity and release contracts before publishing. |
+
+[Dependency versions and reproducible setup](DEPENDENCIES.md)
+
+## 12. Training, inference, and evaluation
 
 Grouped normalized review text is split with seeds 42 and 43: **600 training / 200 validation / 200 test** rows. Grouping reduces exact-text leakage, but is not author/time-separated validation. Validation selects the model and an F1-oriented threshold of **0.43**; test labels select neither.
 
@@ -64,13 +112,34 @@ Confusion matrix, rows actual and columns predicted: `[[60, 42], [21, 77]]`. The
 
 Accuracy counts all correct labels. Precision describes false-alarm risk among predicted positives; recall describes missed source positives. F1 balances them at a chosen threshold. Macro F1 weights both classes equally. Average precision measures positive-class ranking across thresholds and depends on prevalence; ROC AUC compares positive/negative ranking but does not describe one operating point. The full baseline/candidate reports and source/artifact SHA-256 are in [reports/metrics.json](reports/metrics.json).
 
-## Tests and privacy
+### Reproduce training
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --require-hashes --only-binary=:all: -r requirements-training.lock.txt
+python scripts/train.py
+python scripts/check_release.py
+python -m black --check scripts
+python -m pylint scripts
+npm test
+```
+
+On Windows, activate `.venv\Scripts\activate` instead. Training reads the included source file, reconstructs the split and writes `site/model.json`, `site/sample.json`, `site/metrics.json` and `reports/`. Source data is not fetched live by an end user. Review source rights, model results and hash changes before committing a retrained release.
+
+Legacy count-vectorizer and random-forest pickle files are preserved but are not used by the new site. This release is a separately measured UCI Yelp model.
+
+### Application checks
 
 Ten Node tests check held-out Python/JavaScript score parity, exact unigram/bigram tokenization, L2 normalization, unknown-vocabulary warnings, schema/size bounds, thresholds, CSV edge cases and model identity. JavaScript arithmetic agrees with the sklearn pipeline within `1e-9` on the released held-out fixtures.
 
+## 13. Limitations and data handling
+
 No API key, remote NLP provider, analytics script or persistent review storage is used. GitHub serves normal website assets; user-entered text stays in the browser. CSV computation uses a local worker. Literal HTML is treated as text, and spreadsheet-formula prefixes are escaped in exports. Browser extensions and a shared computer remain outside the app's control.
 
-## Run locally
+The curated dataset covers positive and negative sentences. Sarcasm, mixed sentiment, neutral text, and changes in domain can reduce reliability.
+
+## 14. Installation and local setup
 
 Use Node.js **22+** for JavaScript development/checks and Python **3.10 or 3.11** for training and the simple local web server.
 
@@ -86,24 +155,7 @@ python3 -m http.server 8000 --directory site
 
 Open `http://127.0.0.1:8000`. Serve over HTTP rather than opening `index.html` with `file://`, because model fetching, modules and workers need an appropriate origin. Production uses HTTPS on Pages. No API key, Docker container or backend account is needed to use this browser app.
 
-## Reproduce training
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python -m python -m pip install --require-hashes --only-binary=:all: -r requirements-training.lock.txt
-python scripts/train.py
-python scripts/check_release.py
-python -m black --check scripts
-python -m pylint scripts
-npm test
-```
-
-On Windows, activate `.venv\Scripts\activate` instead. Training reads the included source file, reconstructs the split and writes `site/model.json`, `site/sample.json`, `site/metrics.json` and `reports/`. Source data is not fetched live by an end user. Review source rights, model results and hash changes before committing a retrained release.
-
-Legacy count-vectorizer and random-forest pickle files are preserved but are not used by the new site. This release is a separately measured UCI Yelp model.
-
-## Project structure
+## 15. Repository structure
 
 ```text
 site/index.html          accessible HTML interface
@@ -124,7 +176,12 @@ archive/                 preserved previous documentation
 .github/workflows/       test and GitHub Pages release pipeline
 ```
 
-## CI/CD and GitHub Pages
+## 16. Deployment and operations
+
+```mermaid
+flowchart LR
+    A["GitHub main"] --> B["GitHub Actions checks"] --> C["Publish site directory"] --> D["GitHub Pages"]
+```
 
 ```mermaid
 flowchart LR
@@ -150,15 +207,8 @@ Enable **Settings → Pages → Source → GitHub Actions**. The workflow `.gith
 
 References: [GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages), [scikit-learn evaluation](https://scikit-learn.org/stable/modules/model_evaluation.html), [common leakage pitfalls](https://scikit-learn.org/stable/common_pitfalls.html).
 
-## Local dependency installation
+## 17. License, credits, and support
 
-`requirements.txt` lists the complete supported training environment with exact `package==version` pins, including transitive dependencies. Use Python 3.11.17 in a fresh virtual environment:
+Project by **Subhash Dixit**. The repository has no standalone code license file. Dataset and dependency terms are described separately where applicable. Report bugs or documentation issues with synthetic reproduction inputs.
 
-```bash
-python3.11 -m venv .venv
-# Activate: source .venv/bin/activate (Windows: .venv\Scripts\activate)
-python -m pip install -r requirements.txt
-python -m pip check
-```
-
-For hash-verified installation and separate development environments, follow [DEPENDENCIES.md](DEPENDENCIES.md). Original prototype requirements are preserved at `archive/prototype-requirements.in` where present; they are not the supported install command.
+[GitHub Issues](https://github.com/subhashdixit/restaurant-review-classifier/issues)
