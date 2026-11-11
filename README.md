@@ -2,7 +2,7 @@
 
 ## 1. Project overview
 
-Restaurant Review Lab scores single reviews or CSV batches for binary sentiment. A model trained in Python runs locally in the browser.
+Classify restaurant review text as positive or negative. The repository trains and evaluates a sentiment model on labeled Yelp sentences and serves it through a browser app for individual reviews and CSV batches.
 
 [Live demo](https://subhashdixit.github.io/restaurant-review-classifier/) · [Source repository](https://github.com/subhashdixit/restaurant-review-classifier)
 
@@ -10,7 +10,17 @@ Restaurant Review Lab scores single reviews or CSV batches for binary sentiment.
 
 ## 2. Motivation and problem statement
 
-Review teams need a way to triage large volumes of feedback and understand which reviews a model may misread. This app exposes sentiment scores, adjustable thresholds, and vocabulary coverage so reviewers can distinguish a clear model signal from sparse or ambiguous text.
+### Objective
+
+Predict positive or negative sentiment from restaurant review text and measure how reliably the classifier reproduces the source labels on held-out reviews.
+
+### Problem statement
+
+Given a review sentence, estimate a positive sentiment score and apply a threshold. The labeled corpus contains clear positive and negative examples. Real feedback can be mixed, sarcastic, or contain words the model has never seen.
+
+### Motivation
+
+Reading every review is slow when feedback arrives in batches. A first-pass classifier can help a reviewer prioritize what to read, especially if the interface shows model scores and flags limited vocabulary coverage. The repository includes reproducible training and checks that the browser scoring matches Python.
 
 ## 3. Solution and scope
 
